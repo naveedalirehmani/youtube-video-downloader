@@ -63,7 +63,7 @@ function Page({}: Props) {
           body: JSON.stringify({ url: values.videoUrl }),
         });
         const info = await response.json();
-        const sortedFormats = info.formats.sort((a, b) =>
+        const sortedFormats = info.formats.sort((a:any, b:any) =>
           //@ts-ignore
           Number(a.mimeType < b.mimeType)
         );
@@ -178,7 +178,7 @@ function Page({}: Props) {
 
 export default Page;
 
-export function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
+function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
   const router = useRouter();
 
   const handleDownload = async (url: string) => {
