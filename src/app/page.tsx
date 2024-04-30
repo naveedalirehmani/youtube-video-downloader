@@ -1,113 +1,242 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useRouter } from "next/navigation";
+import React, { useState, useTransition } from "react";
+import * as ytdl from "ytdl-core";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { raleway } from "@/fonts";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useTheme } from "next-themes";
+import { Check, Loader2, X } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+/*
+https://www.youtube.com/watch?v=R_1AutOoOUg
+*/
+
+const formSchema = z.object({
+  videoUrl: z.string().url({
+    message: "Please enter a valid URL for the video.",
+  }),
+});
+
+type Props = {};
+
+function Page({}: Props) {
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      videoUrl: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      startTransition(async () => {
+        const response = await fetch("/api", {
+          method: "POST",
+          body: JSON.stringify({ url: values.videoUrl }),
+        });
+        const info = await response.json();
+        const sortedFormats = info.formats.sort((a, b) =>
+          //@ts-ignore
+          Number(a.mimeType < b.mimeType)
+        );
+        setFormats(sortedFormats);
+      });
+    } catch (error) {
+      console.error("Error fetching video information:", error);
+    }
+  }
+
+  console.log(isPending, "isPending");
+
+  const [formats, setFormats] = useState<ytdl.videoFormat[]>([]);
+  const router = useRouter();
+
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  const isActive = theme === "dark";
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="container">
+      <div className="flex justify-between py-6">
+        <div className={cn(raleway.className, "logo text-4xl font-extrabold")}>
+          loader.<span className="text-blut">fo</span>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="airplane-mode"
+            checked={isActive}
+            onCheckedChange={toggleTheme}
+          />
+          <Label htmlFor="airplane-mode" className="text-2xl">
+            Dark Mode
+          </Label>
+        </div>
+      </div>
+      <div>
+        <div className=" text-center mt-32 mb-16">
+          <h1 className="text-7xl font-semibold">YouTube Video Downloader</h1>
+          <p className="text-gray-600 text-2xl leading-9 mt-10 tracking-wide dark:text-gray-300">
+            Try this unique tool for quick, hassle-free downloads from <br />
+            YouTube. Transform your offline video collection with this <br />
+            reliable and efficient downloader.
+          </p>
+        </div>
+        <div className="px-40">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex w-full items-center p-[12px] rounded-[21px] shadow-custom dark:shadow-custom-white "
+            >
+              <FormField
+                control={form.control}
+                name="videoUrl"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="search"
+                        id="default-search"
+                        className="h-12 border-none text-xl bg-transparent"
+                        placeholder="example : https://www.youtube.com/watch?v=iU03_Ub85I8"
+                      />
+                    </FormControl>
+                    {/* <FormMessage /> */}
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="flex items-center justify-between space-x-2 bg-blut rounded-[9px] py-6 px-10 dark:text-white dark:hover:bg-blut dark:hover:brightness-75"
+                disabled={isPending}
+              >
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Download
+              </Button>
+            </form>
+          </Form>
+        </div>
+
+        <div className="banner bg-gray-800 rounded-2xl py-10 text-center my-20">
+          <p className="text-white text-xl">
+            WE DO NOT ALLOW/SUPPORT THE DOWNLOAD OF COPYRIGHTED MATERIAL!
+          </p>
         </div>
       </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      {!!formats.length && (
+        <>
+          <div className="rounded-lg overflow-hidden my-20">
+            <iframe
+              className="d-flex w-full h-[600px]"
+              src={`https://www.youtube.com/embed/${
+                form.getValues("videoUrl").split("v=")[1]
+              }`}
+            ></iframe>
+          </div>
+          <div className="mt-10 mb-20">
+            <TableDemo data={formats}></TableDemo>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+export default Page;
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+export function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
+  const router = useRouter();
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+  const handleDownload = async (url: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const urlObject = window.URL.createObjectURL(blob);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      // Create an anchor element
+      const link = document.createElement("a");
+      link.href = urlObject;
+      link.download = "audio.mp4"; // Specify the filename here
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      window.URL.revokeObjectURL(urlObject);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Type</TableHead>
+          <TableHead>Encoding</TableHead>
+          <TableHead>Quality</TableHead>
+          <TableHead className="text-right">Audio</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data?.map((item) => (
+          <TableRow
+            key={item.url}
+            onClick={() => {
+              // handleDownload(item.url);
+              router.push(item.url);
+            }}
+            className="cursor-pointer"
+          >
+            <TableCell className="font-medium">
+              {item?.mimeType?.split(";")[0].split("/")[0]}
+            </TableCell>
+            <TableCell>{item?.mimeType?.split(";")[0].split("/")[1]}</TableCell>
+            <TableCell>{item.hasVideo ? item.height + "p" : ""}</TableCell>
+            <TableCell className="flex justify-end">
+              {!item.hasAudio ? (
+                <X color="red" strokeWidth={3} />
+              ) : (
+                <Check color="#7ccf1d" strokeWidth={3} />
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
