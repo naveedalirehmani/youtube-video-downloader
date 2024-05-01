@@ -14,34 +14,27 @@ import { Check, X } from "lucide-react";
 import SheetDemo from "./sheet";
 
 function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
-  console.log(data, "data");
   const [progress, setProgress] = useState<number>(0);
   const [downloadStatus, setDownloadStatus] = useState<
     "started" | "finished" | "failed"
   >("finished");
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
 
-  const [file, setFile] = useState<{ type: string; encoding: string } | null>(
-    null
-  );
-  const handleDownload = async (
-    url: string,
-    type: string,
-    encoding: string
-  ) => {
+  const [file, setFile] = useState<{ encoding: string } | null>(null);
+  const handleDownload = async (url: string, encoding: string) => {
     setFile({
-      type,
       encoding,
     });
     try {
       setDownloadStatus("started");
-      setSheetOpen(true); // Open sheet when download starts
+      setSheetOpen(true);
       const response = await axios({
         url,
         method: "GET",
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
           const { loaded, total } = progressEvent;
+          //@ts-ignore
           const percentCompleted = Math.round((loaded * 100) / total);
           setProgress(percentCompleted);
         },
@@ -51,7 +44,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
 
       const link = document.createElement("a");
       link.href = urlObject;
-      link.download = "downloader-online-" + type + "." + encoding;
+      link.download = "downloader-online-" + "." + encoding;
       document.body.appendChild(link);
       link.click();
 
@@ -93,7 +86,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
               onClick={() => {
                 handleDownload(
                   item.url,
-                  item?.mimeType?.split(";")[0].split("/")[0],
+                  //@ts-ignore
                   item?.mimeType?.split(";")[0].split("/")[1]
                 );
               }}

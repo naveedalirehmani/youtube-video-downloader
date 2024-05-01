@@ -20,7 +20,7 @@ function SheetDemo({
   sheetOpen: boolean;
   progress: number;
   downloadStatus: "started" | "finished" | "failed";
-  file: { type: string; encoding: string } | null;
+  file: { encoding: string } | null;
 }) {
   return (
     <Sheet open={sheetOpen}>
@@ -31,7 +31,7 @@ function SheetDemo({
         </SheetHeader>
         <div className="h-96 flex flex-col items-center mt-20">
           <h1 className="mt-10 text-2xl mb-10">
-            {"downloader-online-" + file?.type + "." + file?.encoding}
+            {"downloader-online"+ "." + file?.encoding}
           </h1>
           <Progress value={progress} className="w-full" />
           <h1 className="mt-10 text-2xl">{progress}%</h1>
