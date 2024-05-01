@@ -9,30 +9,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { raleway } from "@/fonts";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
-import { Check, Download, Loader2, X } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Download, Loader2 } from "lucide-react";
+
 import Image from "next/image";
+import TableDemo from "@/components/custom/table";
 
 /*
 https://www.youtube.com/watch?v=R_1AutOoOUg
@@ -88,6 +75,21 @@ function Page({}: Props) {
 
   const isActive = theme === "dark";
 
+  const extractVideoId = (url: string) => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2]) {
+      return match[2];
+    } else {
+      return null;
+    }
+  };
+
+  const videoUrl = form.getValues("videoUrl");
+  const videoId = extractVideoId(videoUrl);
+  const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+
   return (
     <div className="container">
       <div className="flex justify-between py-6">
@@ -105,6 +107,7 @@ function Page({}: Props) {
             id="airplane-mode"
             checked={isActive}
             onCheckedChange={toggleTheme}
+            onChange={() => setFormats([])}
           />
           <Label htmlFor="airplane-mode" className="text-sm md:text-2xl">
             Dark Mode
@@ -128,7 +131,6 @@ function Page({}: Props) {
                 <span className="relative z-10 ml-4">Downloader</span>
               </span>
             </span>
-
             <Image
               src="/youtube.png"
               className="hidden lg:block w-20 h-20 -translate-y-14"
@@ -139,9 +141,9 @@ function Page({}: Props) {
           </h1>
           <p className="flex justify-center text-gray-600 text-lg md:text-2xl md:leading-9 mt-10 md:tracking-wide dark:text-gray-300">
             <span>
-              Try this unique tool for quick, hassle-free downloads from{" "}
+              Try this unique tool for quick, hassle-free downloads from
               <br className="hidden md:block" />
-              YouTube. Transform your offline video collection with this{" "}
+              YouTube. Transform your offline video collection with this
               <br className="hidden md:block" />
               reliable and efficient downloader.
             </span>
@@ -171,7 +173,7 @@ function Page({}: Props) {
                         type="search"
                         id="default-search"
                         className="h-12 border-none text-md md:text-xl bg-transparent"
-                        placeholder="example : https://www.youtube.com/watch?v=iU03_Ub85I8"
+                        placeholder="example : https://www.youtube.com/watch?v=iU03_U34823I8"
                       />
                     </FormControl>
                     {/* <FormMessage /> */}
@@ -203,9 +205,7 @@ function Page({}: Props) {
           <div className="rounded-lg overflow-hidden my-20">
             <iframe
               className="d-flex w-full md:h-[600px]"
-              src={`https://www.youtube.com/embed/${
-                form.getValues("videoUrl").split("v=")[1]
-              }`}
+              src={embedUrl || ""}
             ></iframe>
           </div>
           <div className="mt-10 mb-20">
@@ -218,66 +218,3 @@ function Page({}: Props) {
 }
 
 export default Page;
-
-function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
-  const router = useRouter();
-
-  const handleDownload = async (url: string) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const urlObject = window.URL.createObjectURL(blob);
-
-      // Create an anchor element
-      const link = document.createElement("a");
-      link.href = urlObject;
-      link.download = "audio.mp4"; // Specify the filename here
-      document.body.appendChild(link);
-      link.click();
-
-      // Clean up
-      window.URL.revokeObjectURL(urlObject);
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-    }
-  };
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Type</TableHead>
-          <TableHead>Encoding</TableHead>
-          <TableHead>Quality</TableHead>
-          <TableHead className="text-right">Audio</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data?.map((item) => (
-          <TableRow
-            key={item.url}
-            onClick={() => {
-              // handleDownload(item.url);
-              router.push(item.url);
-            }}
-            className="cursor-pointer"
-          >
-            <TableCell className="font-medium">
-              {item?.mimeType?.split(";")[0].split("/")[0]}
-            </TableCell>
-            <TableCell>{item?.mimeType?.split(";")[0].split("/")[1]}</TableCell>
-            <TableCell>{item.hasVideo ? item.height + "p" : ""}</TableCell>
-            <TableCell className="flex justify-end">
-              {!item.hasAudio ? (
-                <X color="red" strokeWidth={3} />
-              ) : (
-                <Check color="#7ccf1d" strokeWidth={3} />
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-}
