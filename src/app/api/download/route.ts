@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 export async function GET(request: NextRequest) {
   try {
     const url = request.nextUrl.searchParams.get("url");
-    const decodedUrl = decodeURIComponent(url);
+    const decodedUrl = decodeURIComponent(url as string);
 
     const axiosResponse: AxiosResponse = await axios.get(decodedUrl, {
       responseType: "stream",
