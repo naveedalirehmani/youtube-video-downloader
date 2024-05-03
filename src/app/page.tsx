@@ -11,13 +11,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { raleway } from "@/fonts";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { useTheme } from "next-themes";
-import { Download, Loader2 } from "lucide-react";
 
+import { Download, Loader2 } from "lucide-react";
 import Image from "next/image";
 import TableDemo from "@/components/custom/table";
 
@@ -51,11 +46,7 @@ function Page({}: Props) {
           body: JSON.stringify({ url: values.videoUrl }),
         });
         const info = await response.json();
-        const sortedFormats = info.formats.sort((a: any, b: any) =>
-          //@ts-ignore
-          Number(a.mimeType < b.mimeType)
-        );
-        setFormats(sortedFormats);
+        setFormats(info.formats);
       });
     } catch (error) {
       console.error("Error fetching video information:", error);
@@ -65,15 +56,6 @@ function Page({}: Props) {
   console.log(isPending, "isPending");
 
   const [formats, setFormats] = useState<ytdl.videoFormat[]>([]);
-  const router = useRouter();
-
-  const { theme, setTheme } = useTheme();
-
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
-
-  const isActive = theme === "dark";
 
   const extractVideoId = (url: string) => {
     const regExp =
@@ -92,28 +74,7 @@ function Page({}: Props) {
 
   return (
     <div className="container">
-      <div className="flex justify-between py-6">
-        <div
-          className={cn(
-            raleway.className,
-            "logo text-xl md:text-4xl font-extrabold"
-          )}
-        >
-          downloader.<span className="text-blut">online</span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="airplane-mode"
-            checked={isActive}
-            onCheckedChange={toggleTheme}
-            onChange={() => setFormats([])}
-          />
-          <Label htmlFor="airplane-mode" className="text-sm md:text-2xl">
-            Dark Mode
-          </Label>
-        </div>
-      </div>
+     
       <div>
         <div className=" text-center mt-10 md:mt-48 mb-16 md:mb-36">
           <h1 className="flex  justify-between text-5xl md:text-7xl font-semibold">
@@ -161,7 +122,7 @@ function Page({}: Props) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="flex w-full items-center p-[12px] rounded-[21px] shadow-custom dark:shadow-custom-white"
+              className="flex w-full items-center p-[12px] rounded-[21px] shadow-custom dark:shadow-custom-white dark:border-[#101e2e] dark:border-2"
             >
               <FormField
                 control={form.control}
@@ -205,7 +166,7 @@ function Page({}: Props) {
         <>
           <div className="rounded-lg overflow-hidden my-20">
             <iframe
-              className="d-flex w-full md:h-[600px]"
+              className="d-flex w-full h-[200px] md:h-[600px]"
               src={embedUrl || ""}
             ></iframe>
           </div>
