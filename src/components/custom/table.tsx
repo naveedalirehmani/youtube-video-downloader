@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/table";
 import { Check, X } from "lucide-react";
 import SheetDemo from "./sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
-  console.log(data,'data')
+  console.log(data, "data");
   const [progress, setProgress] = useState<number>(0);
   const [downloadStatus, setDownloadStatus] = useState<
     "started" | "finished" | "failed"
@@ -29,10 +30,10 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
     try {
       setDownloadStatus("started");
       setSheetOpen(true);
-      
+
       const encodedUrl = encodeURIComponent(url);
-      console.log(encodedUrl,"encodedUrl")
-      const response = await axios.get(`/api/download?url=${encodedUrl}`,{
+      console.log(encodedUrl, "encodedUrl");
+      const response = await axios.get(`/api/download?url=${encodedUrl}`, {
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
           const { loaded, total } = progressEvent;
@@ -72,46 +73,151 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
         downloadStatus={downloadStatus}
         file={file}
       />
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100 dark:bg-gray-900">
-            <TableHead className="w-[100px]">Type</TableHead>
-            <TableHead>Encoding</TableHead>
-            <TableHead>Quality</TableHead>
-            <TableHead className="text-right">Audio</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.map((item) => (
-            <TableRow
-              key={item.url}
-              onClick={() => {
-                handleDownload(
-                  item.url,
-                  //@ts-ignore
-                  item?.mimeType?.split(";")[0].split("/")[1]
-                );
-              }}
-              className="cursor-pointer"
-            >
-              <TableCell className="font-medium">
-                {item?.mimeType?.split(";")[0].split("/")[0]}
-              </TableCell>
-              <TableCell>
-                {item?.mimeType?.split(";")[0].split("/")[1]}
-              </TableCell>
-              <TableCell>{item.hasVideo ? item.height + "p" : ""}</TableCell>
-              <TableCell className="flex justify-end">
-                {!item.hasAudio ? (
-                  <X color="red" strokeWidth={3} />
-                ) : (
-                  <Check color="#7ccf1d" strokeWidth={3} />
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Tabs defaultValue="All">
+        <TabsList className="grid w-full grid-cols-3 mb-10">
+          <TabsTrigger value="All">All</TabsTrigger>
+          <TabsTrigger value="Video">Video</TabsTrigger>
+          <TabsTrigger value="Audio">Audio</TabsTrigger>
+        </TabsList>
+        <TabsContent value="All">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-100 dark:bg-gray-900">
+                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead>Encoding</TableHead>
+                <TableHead>Quality</TableHead>
+                <TableHead className="text-right">Audio</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.map((item) => (
+                <TableRow
+                  key={item.url}
+                  onClick={() => {
+                    handleDownload(
+                      item.url,
+                      //@ts-ignore
+                      item?.mimeType?.split(";")[0].split("/")[1]
+                    );
+                  }}
+                  className="cursor-pointer"
+                >
+                  <TableCell className="font-medium">
+                    {item?.mimeType?.split(";")[0].split("/")[0]}
+                  </TableCell>
+                  <TableCell>
+                    {item?.mimeType?.split(";")[0].split("/")[1]}
+                  </TableCell>
+                  <TableCell>
+                    {item.hasVideo ? item.height + "p" : ""}
+                  </TableCell>
+                  <TableCell className="flex justify-end">
+                    {!item.hasAudio ? (
+                      <X color="red" strokeWidth={3} />
+                    ) : (
+                      <Check color="#7ccf1d" strokeWidth={3} />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TabsContent>
+        <TabsContent value="Video">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-100 dark:bg-gray-900">
+                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead>Encoding</TableHead>
+                <TableHead>Quality</TableHead>
+                <TableHead className="text-right">Audio</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.map((item) => {
+                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "video"))
+                  return (
+                    <TableRow
+                      key={item.url}
+                      onClick={() => {
+                        handleDownload(
+                          item.url,
+                          //@ts-ignore
+                          item?.mimeType?.split(";")[0].split("/")[1]
+                        );
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <TableCell className="font-medium">
+                        {item?.mimeType?.split(";")[0].split("/")[0]}
+                      </TableCell>
+                      <TableCell>
+                        {item?.mimeType?.split(";")[0].split("/")[1]}
+                      </TableCell>
+                      <TableCell>
+                        {item.hasVideo ? item.height + "p" : ""}
+                      </TableCell>
+                      <TableCell className="flex justify-end">
+                        {!item.hasAudio ? (
+                          <X color="red" strokeWidth={3} />
+                        ) : (
+                          <Check color="#7ccf1d" strokeWidth={3} />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+              })}
+            </TableBody>
+          </Table>
+        </TabsContent>
+        <TabsContent value="Audio">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-100 dark:bg-gray-900">
+                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead>Encoding</TableHead>
+                <TableHead>Quality</TableHead>
+                <TableHead className="text-right">Audio</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.map((item) => {
+                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "audio"))
+                  return (
+                    <TableRow
+                      key={item.url}
+                      onClick={() => {
+                        handleDownload(
+                          item.url,
+                          //@ts-ignore
+                          item?.mimeType?.split(";")[0].split("/")[1]
+                        );
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <TableCell className="font-medium">
+                        {item?.mimeType?.split(";")[0].split("/")[0]}
+                      </TableCell>
+                      <TableCell>
+                        {item?.mimeType?.split(";")[0].split("/")[1]}
+                      </TableCell>
+                      <TableCell>
+                        {item.hasVideo ? item.height + "p" : ""}
+                      </TableCell>
+                      <TableCell className="flex justify-end">
+                        {!item.hasAudio ? (
+                          <X color="red" strokeWidth={3} />
+                        ) : (
+                          <Check color="#7ccf1d" strokeWidth={3} />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+              })}
+            </TableBody>
+          </Table>
+        </TabsContent>
+      </Tabs>
     </>
   );
 }

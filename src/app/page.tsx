@@ -74,7 +74,6 @@ function Page({}: Props) {
 
   return (
     <div className="container">
-     
       <div>
         <div className=" text-center mt-10 md:mt-48 mb-16 md:mb-36">
           <h1 className="flex  justify-between text-5xl md:text-7xl font-semibold">
