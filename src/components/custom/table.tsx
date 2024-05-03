@@ -135,7 +135,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
             </TableHeader>
             <TableBody>
               {data?.map((item) => {
-                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "video"))
+                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "video")) return
                   return (
                     <TableRow
                       key={item.url}
@@ -182,7 +182,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
             </TableHeader>
             <TableBody>
               {data?.map((item) => {
-                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "audio"))
+                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "audio")) return
                   return (
                     <TableRow
                       key={item.url}
