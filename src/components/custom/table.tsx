@@ -14,6 +14,7 @@ import { Check, X } from "lucide-react";
 import SheetDemo from "./sheet";
 
 function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
+  console.log(data,'data')
   const [progress, setProgress] = useState<number>(0);
   const [downloadStatus, setDownloadStatus] = useState<
     "started" | "finished" | "failed"
@@ -28,9 +29,10 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
     try {
       setDownloadStatus("started");
       setSheetOpen(true);
-      const response = await axios({
-        url,
-        method: "GET",
+      
+      const encodedUrl = encodeURIComponent(url);
+      console.log(encodedUrl,"encodedUrl")
+      const response = await axios.get(`/api/download?url=${encodedUrl}`,{
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
           const { loaded, total } = progressEvent;
@@ -58,7 +60,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
       setProgress(0);
       setDownloadStatus("failed");
     } finally {
-      setSheetOpen(false); // Close sheet when download finishes or fails
+      setSheetOpen(false);
     }
   };
 
@@ -72,7 +74,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
       />
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-gray-100 dark:bg-gray-900">
             <TableHead className="w-[100px]">Type</TableHead>
             <TableHead>Encoding</TableHead>
             <TableHead>Quality</TableHead>
