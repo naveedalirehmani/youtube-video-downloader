@@ -17,6 +17,8 @@ import {
   Music,
   Presentation,
   Video,
+  Volume2,
+  VolumeX,
   X,
 } from "lucide-react";
 import SheetDemo from "./sheet";
@@ -90,7 +92,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-gray-900">
-                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead className="w-[200px]">Type</TableHead>
                 <TableHead>Encoding</TableHead>
                 <TableHead>Quality</TableHead>
                 <TableHead className="text-right">Audio</TableHead>
@@ -109,7 +111,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                   }}
                   className="cursor-pointer"
                 >
-                  <TableCell className="font-medium flex flex-col items-center justify-start">
+                  <TableCell className="font-medium flex flex-row gap-2 justify-start">
                     {item?.mimeType?.split(";")[0].split("/")[0] === "video" ? (
                       <span>
                         <Video></Video>
@@ -128,12 +130,10 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                     {item.hasVideo ? item.height + "p" : ""}
                   </TableCell>
                   <TableCell className="flex justify-end gap-2">
-                    <Headphones />
-
                     {!item.hasAudio ? (
-                      <X color="red" strokeWidth={3} />
+                      <Volume2 color="#7ccf1d" />
                     ) : (
-                      <Check color="#7ccf1d" strokeWidth={3} />
+                      <VolumeX color="red" />
                     )}
                   </TableCell>
                 </TableRow>
@@ -145,7 +145,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-gray-900">
-                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead className="w-[200px]">Type</TableHead>
                 <TableHead>Encoding</TableHead>
                 <TableHead>Quality</TableHead>
                 <TableHead className="text-right">Audio</TableHead>
@@ -167,7 +167,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                     }}
                     className="cursor-pointer"
                   >
-                    <TableCell className="font-medium flex flex-col items-center justify-start">
+                    <TableCell className="font-medium flex flex-row gap-2 justify-start">
                       {item?.mimeType?.split(";")[0].split("/")[0] ===
                       "video" ? (
                         <span>
@@ -187,12 +187,10 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                       {item.hasVideo ? item.height + "p" : ""}
                     </TableCell>
                     <TableCell className="flex justify-end gap-2">
-                      <Headphones />
-
                       {!item.hasAudio ? (
-                        <X color="red" strokeWidth={3} />
+                        <Volume2 color="#7ccf1d" />
                       ) : (
-                        <Check color="#7ccf1d" strokeWidth={3} />
+                        <VolumeX color="red" />
                       )}
                     </TableCell>
                   </TableRow>
@@ -205,7 +203,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-gray-900">
-                <TableHead className="w-[100px]">Type</TableHead>
+                <TableHead className="w-[200px]">Type</TableHead>
                 <TableHead>Encoding</TableHead>
                 <TableHead>Quality</TableHead>
                 <TableHead className="text-right">Audio</TableHead>
@@ -227,7 +225,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                     }}
                     className="cursor-pointer"
                   >
-                    <TableCell className="font-medium flex flex-col items-center justify-start">
+                    <TableCell className="font-medium flex flex-row gap-2 justify-start">
                       {item?.mimeType?.split(";")[0].split("/")[0] ===
                       "video" ? (
                         <span>
@@ -247,11 +245,10 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                       {item.hasVideo ? item.height + "p" : ""}
                     </TableCell>
                     <TableCell className="flex justify-end gap-2">
-                      <Headphones />
                       {!item.hasAudio ? (
-                        <X color="red" strokeWidth={3} />
+                        <Volume2 color="#7ccf1d" />
                       ) : (
-                        <Check color="#7ccf1d" strokeWidth={3} />
+                        <VolumeX color="red" />
                       )}
                     </TableCell>
                   </TableRow>
