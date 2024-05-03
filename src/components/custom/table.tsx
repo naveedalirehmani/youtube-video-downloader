@@ -131,9 +131,9 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                   </TableCell>
                   <TableCell className="flex justify-end gap-2">
                     {!item.hasAudio ? (
-                      <Volume2 color="#7ccf1d" />
-                    ) : (
                       <VolumeX color="red" />
+                    ) : (
+                      <Volume2 color="#7ccf1d" />
                     )}
                   </TableCell>
                 </TableRow>
@@ -188,9 +188,9 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                     </TableCell>
                     <TableCell className="flex justify-end gap-2">
                       {!item.hasAudio ? (
-                        <Volume2 color="#7ccf1d" />
-                      ) : (
                         <VolumeX color="red" />
+                      ) : (
+                        <Volume2 color="#7ccf1d" />
                       )}
                     </TableCell>
                   </TableRow>
@@ -246,9 +246,9 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                     </TableCell>
                     <TableCell className="flex justify-end gap-2">
                       {!item.hasAudio ? (
-                        <Volume2 color="#7ccf1d" />
-                      ) : (
                         <VolumeX color="red" />
+                      ) : (
+                        <Volume2 color="#7ccf1d" />
                       )}
                     </TableCell>
                   </TableRow>
