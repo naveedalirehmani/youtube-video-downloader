@@ -127,8 +127,9 @@ function Page({}: Props) {
             <span>
               YouTube Video
               <span className="inline-block relative">
-                <span className="border-b-8 rounded-lg border-blue-500 absolute bottom-0 left-0 right-0 -translate-y-2"></span>
-                <span className="relative z-10 ml-4">Downloader</span>
+                <span className="-rotate-3 z-20 border-b-8 rounded-3xl border-blue-500 absolute bottom-0 left-0 right-0 -translate-y-2"></span>
+                <span className="relative z-30 ml-4">Downloa</span>
+                <span className="relative z-10">der</span>
               </span>
             </span>
             <Image
