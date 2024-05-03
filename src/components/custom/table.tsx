@@ -10,12 +10,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Check, X } from "lucide-react";
+import {
+  AudioLines,
+  Check,
+  Headphones,
+  Music,
+  Presentation,
+  Video,
+  X,
+} from "lucide-react";
 import SheetDemo from "./sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
-  console.log(data, "data");
   const [progress, setProgress] = useState<number>(0);
   const [downloadStatus, setDownloadStatus] = useState<
     "started" | "finished" | "failed"
@@ -32,7 +39,7 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
       setSheetOpen(true);
 
       const encodedUrl = encodeURIComponent(url);
-      console.log(encodedUrl, "encodedUrl");
+
       const response = await axios.get(`/api/download?url=${encodedUrl}`, {
         responseType: "blob",
         onDownloadProgress: (progressEvent) => {
@@ -102,16 +109,27 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
                   }}
                   className="cursor-pointer"
                 >
-                  <TableCell className="font-medium">
-                    {item?.mimeType?.split(";")[0].split("/")[0]}
+                  <TableCell className="font-medium flex flex-col items-center justify-start">
+                    {item?.mimeType?.split(";")[0].split("/")[0] === "video" ? (
+                      <span>
+                        <Video></Video>
+                      </span>
+                    ) : (
+                      <span>
+                        <Music></Music>
+                      </span>
+                    )}
+                    <span>{item?.mimeType?.split(";")[0].split("/")[0]}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium">
                     {item?.mimeType?.split(";")[0].split("/")[1]}
                   </TableCell>
                   <TableCell>
                     {item.hasVideo ? item.height + "p" : ""}
                   </TableCell>
-                  <TableCell className="flex justify-end">
+                  <TableCell className="flex justify-end gap-2">
+                    <Headphones />
+
                     {!item.hasAudio ? (
                       <X color="red" strokeWidth={3} />
                     ) : (
@@ -135,37 +153,50 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
             </TableHeader>
             <TableBody>
               {data?.map((item) => {
-                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "video")) return
-                  return (
-                    <TableRow
-                      key={item.url}
-                      onClick={() => {
-                        handleDownload(
-                          item.url,
-                          //@ts-ignore
-                          item?.mimeType?.split(";")[0].split("/")[1]
-                        );
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <TableCell className="font-medium">
-                        {item?.mimeType?.split(";")[0].split("/")[0]}
-                      </TableCell>
-                      <TableCell>
-                        {item?.mimeType?.split(";")[0].split("/")[1]}
-                      </TableCell>
-                      <TableCell>
-                        {item.hasVideo ? item.height + "p" : ""}
-                      </TableCell>
-                      <TableCell className="flex justify-end">
-                        {!item.hasAudio ? (
-                          <X color="red" strokeWidth={3} />
-                        ) : (
-                          <Check color="#7ccf1d" strokeWidth={3} />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
+                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "video"))
+                  return;
+                return (
+                  <TableRow
+                    key={item.url}
+                    onClick={() => {
+                      handleDownload(
+                        item.url,
+                        //@ts-ignore
+                        item?.mimeType?.split(";")[0].split("/")[1]
+                      );
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <TableCell className="font-medium flex flex-col items-center justify-start">
+                      {item?.mimeType?.split(";")[0].split("/")[0] ===
+                      "video" ? (
+                        <span>
+                          <Video></Video>
+                        </span>
+                      ) : (
+                        <span>
+                          <Music></Music>
+                        </span>
+                      )}
+                      <span>{item?.mimeType?.split(";")[0].split("/")[0]}</span>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {item?.mimeType?.split(";")[0].split("/")[1]}
+                    </TableCell>
+                    <TableCell>
+                      {item.hasVideo ? item.height + "p" : ""}
+                    </TableCell>
+                    <TableCell className="flex justify-end gap-2">
+                      <Headphones />
+
+                      {!item.hasAudio ? (
+                        <X color="red" strokeWidth={3} />
+                      ) : (
+                        <Check color="#7ccf1d" strokeWidth={3} />
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
               })}
             </TableBody>
           </Table>
@@ -182,37 +213,49 @@ function TableDemo({ data }: { data: ytdl.videoFormat[] }) {
             </TableHeader>
             <TableBody>
               {data?.map((item) => {
-                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "audio")) return
-                  return (
-                    <TableRow
-                      key={item.url}
-                      onClick={() => {
-                        handleDownload(
-                          item.url,
-                          //@ts-ignore
-                          item?.mimeType?.split(";")[0].split("/")[1]
-                        );
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <TableCell className="font-medium">
-                        {item?.mimeType?.split(";")[0].split("/")[0]}
-                      </TableCell>
-                      <TableCell>
-                        {item?.mimeType?.split(";")[0].split("/")[1]}
-                      </TableCell>
-                      <TableCell>
-                        {item.hasVideo ? item.height + "p" : ""}
-                      </TableCell>
-                      <TableCell className="flex justify-end">
-                        {!item.hasAudio ? (
-                          <X color="red" strokeWidth={3} />
-                        ) : (
-                          <Check color="#7ccf1d" strokeWidth={3} />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
+                if (!(item?.mimeType?.split(";")[0].split("/")[0] === "audio"))
+                  return;
+                return (
+                  <TableRow
+                    key={item.url}
+                    onClick={() => {
+                      handleDownload(
+                        item.url,
+                        //@ts-ignore
+                        item?.mimeType?.split(";")[0].split("/")[1]
+                      );
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <TableCell className="font-medium flex flex-col items-center justify-start">
+                      {item?.mimeType?.split(";")[0].split("/")[0] ===
+                      "video" ? (
+                        <span>
+                          <Video></Video>
+                        </span>
+                      ) : (
+                        <span>
+                          <Music></Music>
+                        </span>
+                      )}
+                      <span>{item?.mimeType?.split(";")[0].split("/")[0]}</span>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {item?.mimeType?.split(";")[0].split("/")[1]}
+                    </TableCell>
+                    <TableCell>
+                      {item.hasVideo ? item.height + "p" : ""}
+                    </TableCell>
+                    <TableCell className="flex justify-end gap-2">
+                      <Headphones />
+                      {!item.hasAudio ? (
+                        <X color="red" strokeWidth={3} />
+                      ) : (
+                        <Check color="#7ccf1d" strokeWidth={3} />
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
               })}
             </TableBody>
           </Table>
