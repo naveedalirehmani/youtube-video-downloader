@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 type Props = {};
 
@@ -27,11 +28,15 @@ function Navbar({}: Props) {
           "logo text-xl md:text-4xl font-extrabold"
         )}
       >
-        downloader.<span className="text-blut">online</span>
+        <Link href="/">
+          downloader.<span className="text-blut">online</span>
+        </Link>
       </div>
 
       <div className="flex items-center space-x-2">
-        <Button onClick={toggleTheme} variant='outline'>{isActive ? <Sun /> : <Moon />}</Button>
+        <Button onClick={toggleTheme} variant="outline">
+          {isActive ? <Sun /> : <Moon />}
+        </Button>
       </div>
       {/* <Switch
           id="airplane-mode"

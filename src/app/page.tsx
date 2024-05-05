@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Download, Loader2 } from "lucide-react";
 import Image from "next/image";
 import TableDemo from "@/components/custom/table";
+import Header from "@/components/custom/header";
 
 /*
 https://www.youtube.com/watch?v=R_1AutOoOUg
@@ -75,48 +76,7 @@ function Page({}: Props) {
   return (
     <div className="container">
       <div>
-        <div className=" text-center mt-10 md:mt-48 mb-16 md:mb-36">
-          <h1 className="flex  justify-between text-5xl md:text-7xl font-semibold">
-            <Image
-              src="/play.png"
-              className="hidden lg:block w-40 h-20 -translate-y-14"
-              width={200}
-              height={100}
-              alt="youtube icon"
-            ></Image>
-            <span>
-              YouTube Video
-              <span className="inline-block relative">
-                <span className="-rotate-3 z-20 border-b-8 rounded-3xl border-blue-500 absolute bottom-0 left-0 right-0 -translate-y-2"></span>
-                <span className="relative z-30 ml-4">Downloa</span>
-                <span className="relative z-10">der</span>
-              </span>
-            </span>
-            <Image
-              src="/youtube.png"
-              className="hidden lg:block w-20 h-20 -translate-y-14"
-              width={200}
-              height={100}
-              alt="youtube icon"
-            ></Image>
-          </h1>
-          <p className="flex justify-center text-gray-600 text-lg md:text-2xl md:leading-9 mt-10 md:tracking-wide dark:text-gray-300">
-            <span>
-              Try this unique tool for quick, hassle-free downloads from
-              <br className="hidden md:block" />
-              YouTube. Transform your offline video collection with this
-              <br className="hidden md:block" />
-              reliable and efficient downloader.
-            </span>
-            <Image
-              src="/music.png"
-              className="hidden lg:block w-20 h-20 translate-y-24 translate-x-24"
-              width={200}
-              height={100}
-              alt="youtube icon"
-            ></Image>
-          </p>
-        </div>
+        <Header/>
         <div className="md:px-40">
           <Form {...form}>
             <form
@@ -147,7 +107,7 @@ function Page({}: Props) {
                 disabled={isPending}
               >
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <span className="hidden md:block">Download</span>
+                <span className="hidden md:block">Search</span>
                 <Download className="block md:hidden"></Download>
               </Button>
             </form>
