@@ -1,6 +1,6 @@
 "use client";
 
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
 import * as ytdl from "ytdl-core";
 
@@ -13,11 +13,9 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { Download, Loader2 } from "lucide-react";
-// import Image from "next/image";
+import Image from "next/image";
 import TableDemo from "@/components/custom/table";
 import Header from "@/components/custom/header";
-
-
 
 /*
 https://www.youtube.com/watch?v=R_1AutOoOUg
@@ -56,7 +54,6 @@ function Page({}: Props) {
     }
   }
 
-
   console.log(isPending, "isPending");
 
   const [formats, setFormats] = useState<ytdl.videoFormat[]>([]);
@@ -78,12 +75,8 @@ function Page({}: Props) {
 
   return (
     <div className="container">
-  
       <div>
         <Header/>
-
-
-
         <div className="md:px-40">
           <Form {...form}>
             <form
@@ -141,11 +134,7 @@ function Page({}: Props) {
           </div>
         </>
       )}
-     
     </div>
-
-
-
   );
 }
 
